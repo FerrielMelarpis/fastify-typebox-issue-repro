@@ -1,0 +1,8 @@
+[tools]
+node = "22"
+
+[hooks]
+postinstall = "npx corepack enable"
+
+[settings]
+experimental = true
