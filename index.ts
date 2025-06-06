@@ -8,23 +8,23 @@ const fastify = Fastify().withTypeProvider().setValidatorCompiler(TypeBoxValidat
 const UserSchema = Type.Object({
   id: Type.String(),
   name: Type.String()
-}, { $id: 'UserSchema' });
+}, { $id: "UserSchema" });
 
-// ISSUE: This doesn't work:
-fastify.addSchema(UserSchema);
+// ISSUE: This doesn"t work:
+// fastify.addSchema(UserSchema);
 
 async function routes(instance: FastifyInstance) {
   // WORKING: This works fine:
-  // fastify.addSchema(UserSchema);
+  fastify.addSchema(UserSchema);
 
   const RequestSchema = Type.Union([
     Type.Ref(UserSchema),
-  ])
+  ], { $id: "RequestSchema" })
   const ResponseSchema = Type.Union([
     Type.Ref(UserSchema)
-  ], { $id: 'ResponseSchema' });
+  ], { $id: "ResponseSchema" });
 
-  instance.post('/', {
+  instance.post("/", {
     schema: {
       body: RequestSchema,
       response: {
@@ -43,5 +43,5 @@ fastify.listen({ port: 3000 }, (err, address) => {
     console.error(err);
     process.exit(1);
   }
-  console.log('Server listening on', address);
+  console.log("Server listening on", address);
 });
