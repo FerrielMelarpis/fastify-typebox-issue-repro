@@ -7,29 +7,30 @@ const fastify = Fastify().withTypeProvider().setValidatorCompiler(TypeBoxValidat
 
 const UserSchema = Type.Object({
   id: Type.String(),
-  name: Type.String()
+  name: Type.String(),
 }, { $id: "UserSchema" });
+const ObjectSchema = Type.Object({
+  id: Type.String(),
+  shape: Type.String(),
+}, { $id: "ObjectSchema" });
 
 // ISSUE: This doesn"t work:
 // fastify.addSchema(UserSchema);
+// fastify.addSchema(ObjectSchema);
 
 async function routes(instance: FastifyInstance) {
   // WORKING: This works fine:
   fastify.addSchema(UserSchema);
+  fastify.addSchema(ObjectSchema);
 
   const RequestSchema = Type.Union([
     Type.Ref(UserSchema),
+    Type.Ref(ObjectSchema),
   ], { $id: "RequestSchema" })
-  const ResponseSchema = Type.Union([
-    Type.Ref(UserSchema)
-  ], { $id: "ResponseSchema" });
 
   instance.post("/", {
     schema: {
       body: RequestSchema,
-      response: {
-        200: ResponseSchema,
-      }
     }
   }, (request: FastifyRequest, reply: FastifyReply) => {
     reply.send("Ok");
